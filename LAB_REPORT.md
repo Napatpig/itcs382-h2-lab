@@ -36,17 +36,23 @@ State in one sentence where you think the parcels of the first run were kept.
 ParcelRepository repository = new InMemoryParcelRepository();
 ```
 
-0.6 Commit of the switch to H2:
+0.6 Commit of the switch to H2: 6902cce
 
 0.7 Output of `SELECT * FROM PARCEL;` after you stored two parcels:
 
 ```text
-
+sql> SELECT * FROM PARCEL;
+CODE  | STUDENT_ID | PARCEL_SIZE | STATUS | LOCKER_NUMBER
+P1001 | S1001      | SMALL       | STORED | 1
+P1002 | S1002      | LARGE       | STORED | 3
+(2 rows, 25 ms)
 ```
 
 0.8 Explain why ParcelPoint could not start while the H2 Shell was open, and identify the class that wrote the message `Cannot create the PARCEL table`.
+ANS: ParcelPoint could not start because H2 is an embedded database: the file parcelpoint.mv.db belongs to the first program that opened it, so H2 locked it while the Shell was using it. The class that wrote "Cannot create the PARCEL table" is H2ParcelRepository, which wrapped H2's SQLException in an IllegalStateException.
 
 0.9 Explain why `staff` shows no parcel while `find` shows each one, and why all three lockers look free.
+ANS: Staff shows no parcel because findAll in H2ParcelRepository is not written yet and returns an empty list, while find uses findByCode, which is already written and reads the row from H2. The constructor of ParcelService calls findAll to put every waiting parcel back into its locker, so with an empty list no locker is filled and all three lockers look free.
 
 0.11 Your findAll method:
 
