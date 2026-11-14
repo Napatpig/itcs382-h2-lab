@@ -54,10 +54,24 @@ ANS: ParcelPoint could not start because H2 is an embedded database: the file pa
 0.9 Explain why `staff` shows no parcel while `find` shows each one, and why all three lockers look free.
 ANS: Staff shows no parcel because findAll in H2ParcelRepository is not written yet and returns an empty list, while find uses findByCode, which is already written and reads the row from H2. The constructor of ParcelService calls findAll to put every waiting parcel back into its locker, so with an empty list no locker is filled and all three lockers look free.
 
-0.11 Your findAll method:
+0.11 Your findAll method: 3cfc8c8
 
 ```java
-
+@Override
+public List<Parcel> findAll() {
+    String sql = "SELECT * FROM PARCEL ORDER BY CODE";
+    List<Parcel> parcels = new ArrayList<>();
+    try (Connection connection = connect();
+         PreparedStatement statement = connection.prepareStatement(sql);
+         ResultSet row = statement.executeQuery()) {
+        while (row.next()) {
+            parcels.add(toParcel(row));
+        }
+    } catch (SQLException e) {
+        throw new IllegalStateException("Cannot read the parcels", e);
+    }
+    return parcels;
+}
 ```
 
 Commit that adds findAll:
