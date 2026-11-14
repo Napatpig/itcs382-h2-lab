@@ -119,7 +119,15 @@ classDiagram
     class ParcelService
     class ParcelRepository {
         <<interface>>
+        +save(Parcel parcel) void
+        +findByCode(String code) Optional~Parcel~
+        +findAll() List~Parcel~
     }
+    class InMemoryParcelRepository
+    class H2ParcelRepository
+    ParcelService --> ParcelRepository
+    ParcelRepository <|.. InMemoryParcelRepository
+    ParcelRepository <|.. H2ParcelRepository
 ```
 
 A3 Draw a sequence diagram for the command `store P1003 S1003 MEDIUM`, from the staff member to the repository. Show each message as an operation of the class that receives it.
@@ -128,10 +136,24 @@ A3 Draw a sequence diagram for the command `store P1003 S1003 MEDIUM`, from the 
 sequenceDiagram
     actor Staff
     participant cli as :ParcelCommandLine
+    participant parcel as :Parcel
+    participant service as :ParcelService
+    participant locker as :Locker
+    participant repo as :ParcelRepository
     Staff->>cli: store P1003 S1003 MEDIUM
+    cli->>parcel: Parcel(code, studentId, size)
+    cli->>service: store(parcel)
+    loop for each locker until one fits
+        service->>locker: fits(parcel)
+    end
+    service->>locker: setParcel(parcel)
+    service->>locker: getNumber()
+    service->>parcel: storeIn(number)
+    service->>repo: save(parcel)
 ```
 
 Explain why the last lifeline is the interface ParcelRepository rather than H2ParcelRepository.
+ANS: The last lifeline is the interface ParcelRepository because ParcelService only knows the interface and calls save on it; it never names H2ParcelRepository. Main decides which class stands behind the interface (Dependency Inversion Principle), so the diagram stays the same whichever data store is used.
 
 ## Part B. Design questions
 
