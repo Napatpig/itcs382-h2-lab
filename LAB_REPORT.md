@@ -173,4 +173,4 @@ ANS: The last lifeline is the interface ParcelRepository because ParcelService o
 
 | AI tool and exact model | Date | Purpose | Files or answers it produced or changed | How you checked its output |
 | --- | --- | --- | --- | --- |
-| Claude Sonnet 5.5 | 2026-11-14 | Explained the lab steps in Thai, check grammar for my answers, reviewed my Java code | I ran every step myself and compared the output with the lab sheet; I checked A1 to A3 against the imports and methods in my Java files; I ran the program and the H2 Shell to confirm 0.8 and 0.9 |
+| Claude Sonnet 5.5 | 2026-11-14 | Explained the lab steps in Thai, check grammar for my answers, reviewed my Java code  | Draft answers for part A and B | I ran every step myself and compared the output with the lab sheet; I checked A1 to A3 against the imports and methods in my Java files; I ran the program and the H2 Shell to confirm 0.8 and 0.9 |
