@@ -1,34 +1,39 @@
 # Lab Report, Designing the Data Management Layer with H2
 
-Repository URL:
+Repository URL: https://github.com/Napatpig/itcs382-h2-lab
 
 ## Tools
 
 | Item | Version or name |
 | --- | --- |
-| JDK | |
-| Maven | |
-| IDE | |
-| AI tool and exact model, if you used one | |
+| JDK |openjdk version "25.0.4.1" 2026-08-18 LTS |
+| Maven |Apache Maven 3.10.0 |
+| IDE |VS Code 1.143.1|
+| AI tool and exact model |Claude Sonnet 5.5 |
 
 ## Part 0. From a store in memory to H2
 
-Commit of the starter, before any change:
+Commit of the starter, before any change: a13e9b5
 
 0.3 Your prediction for `staff`, written before the second run:
+"Packages P1001 and P1002 are still present, as the program likely retains the stored data."
 
 Output of the second run, for `staff` and `quit`:
 
 ```text
+> staff
+Free lockers: 3
+> quit
 
 ```
 
 State in one sentence where you think the parcels of the first run were kept.
+"Stored in the memory of the running program, which is released when the program terminates."
 
 0.5 The line of Main that you would change to keep the parcels somewhere else:
 
 ```java
-
+ParcelRepository repository = new InMemoryParcelRepository();
 ```
 
 0.6 Commit of the switch to H2:
