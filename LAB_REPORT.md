@@ -54,7 +54,7 @@ ANS: ParcelPoint could not start because H2 is an embedded database: the file pa
 0.9 Explain why `staff` shows no parcel while `find` shows each one, and why all three lockers look free.
 ANS: Staff shows no parcel because findAll in H2ParcelRepository is not written yet and returns an empty list, while find uses findByCode, which is already written and reads the row from H2. The constructor of ParcelService calls findAll to put every waiting parcel back into its locker, so with an empty list no locker is filled and all three lockers look free.
 
-0.11 Your findAll method: 3cfc8c8
+0.11 Your findAll method: 
 
 ```java
 @Override
@@ -74,7 +74,7 @@ public List<Parcel> findAll() {
 }
 ```
 
-Commit that adds findAll:
+Commit that adds findAll: 3cfc8c8
 
 0.12 Output of `SELECT * FROM PARCEL;` after the pickup:
 
@@ -158,15 +158,19 @@ ANS: The last lifeline is the interface ParcelRepository because ParcelService o
 ## Part B. Design questions
 
 1. Identify the files that you changed to move from the store in memory to H2, and explain why no other class had to change. Use the terms of this course.
+1.ANS: I changed only Main.java (its import line and the line that creates the repository, now new H2ParcelRepository("./data/parcelpoint")). The H2ParcelRepository class was already in the starter, and I only completed its findAll method. No other class had to change because ParcelService depends on the interface ParcelRepository, not on a concrete class (Dependency Inversion Principle), and Main is the one place that creates the concrete repository and passes it in by constructor. The interface is the boundary of the data management layer, so the business layer is loosely coupled to the data store.
 
 2. The PARCEL table stores the size of a parcel as SMALL, MEDIUM or LARGE rather than as 1, 2 or 3. Identify the type of connascence between ParcelSize and the table in each case, and explain which one is weaker.
+2.ANS: When the table stores the names SMALL, MEDIUM and LARGE, ParcelSize and the table have connascence of name: both sides must agree on the names, and ParcelSize.valueOf in toParcel reads the text back by its name. When the table stores 1, 2 and 3, they have connascence of convention (and of position, if the numbers follow the order of the enum), because both sides must agree on what each number means, and nothing in the table says so. Connascence of name is weaker, because the values are readable in the table and a wrong or renamed value is easy to see and fix.
 
 3. Project Phase 2 asks for a data store that needs no separate server. Explain why an embedded database such as H2 meets this rule, and describe the limit of an embedded database that Step 0.8 showed.
+3.ANS: H2 meets the rule because it is a library inside the jar of the program: it runs in the same Java process, keeps its data in the file parcelpoint.mv.db and creates its table on the first run, so no separate database server has to be installed or started. The limit that Step 0.8 showed is that the database file belongs to the one program that opened it: while the H2 Shell had it open, H2 locked the file and ParcelPoint could not start. So only one program can use an embedded database at a time.
 
 4. State the data store that you would choose for your Project Phase 2 team, files or an embedded database, the requirement that drives the choice, and the package that will access it.
+4.ANS: My team would choose an embedded database (H2) because our project must search and filter records by several fields and keep each record unique by its key, which SQL and a primary key do for us. The package storage will access the data store, and the rest of the code will use it only through a repository interface that Main creates.
 
 ## AI usage declaration
 
 | AI tool and exact model | Date | Purpose | Files or answers it produced or changed | How you checked its output |
 | --- | --- | --- | --- | --- |
-| | | | | |
+| Claude Sonnet 5.5 | 2026-11-14 | Explained the lab steps in Thai, check grammar for my answers, reviewed my Java code | I ran every step myself and compared the output with the lab sheet; I checked A1 to A3 against the imports and methods in my Java files; I ran the program and the H2 Shell to confirm 0.8 and 0.9 |
