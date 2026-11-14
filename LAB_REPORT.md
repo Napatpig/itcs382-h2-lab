@@ -79,7 +79,11 @@ Commit that adds findAll:
 0.12 Output of `SELECT * FROM PARCEL;` after the pickup:
 
 ```text
-
+sql> SELECT * FROM PARCEL;
+CODE  | STUDENT_ID | PARCEL_SIZE | STATUS    | LOCKER_NUMBER
+P1001 | S1001      | SMALL       | PICKED_UP | null
+P1002 | S1002      | LARGE       | STORED    | 3
+(2 rows, 22 ms)
 ```
 
 0.13 Optional. Describe what `find P9999'OR'1'='1` showed while the SQL was joined from strings, and what it showed after you put the placeholder back.
@@ -94,11 +98,19 @@ flowchart TB
     cli
     service
     domain
-    storage
+    storage["storage, accesses the data store"]
+    parcelpoint --> cli
+    parcelpoint --> service
+    parcelpoint --> storage
     cli --> service
+    cli --> domain
+    service --> domain
+    service --> storage
+    storage --> domain
 ```
 
 State whether cli depends on storage, and explain why.
+ANS: No, cli does not depend on storage. ParcelCommandLine imports only domain and service, and it reaches the parcels through ParcelService, so only service (and Main, which creates the repository) knows the storage package.
 
 A2 Complete the class diagram of the data management layer with ParcelService, the interface ParcelRepository with its three operations, and the two classes that implement it.
 
